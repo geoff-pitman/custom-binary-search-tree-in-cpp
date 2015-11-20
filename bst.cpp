@@ -1,7 +1,7 @@
 //File:   bst.cpp
 //Author: Geoffrey Pitman
 //Course: CSC 237
-//Date:   Spring 2015
+//Date:   April 30, 2015
 //Purpose:Implementation of a binary search tree, class bst
 
 #ifndef BST_CPP

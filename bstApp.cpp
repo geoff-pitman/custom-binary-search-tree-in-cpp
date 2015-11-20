@@ -1,4 +1,9 @@
-
+//File:   bstApp.cpp
+//Author: Geoffrey Pitman
+//Course: CSC 237
+//Date:   April 30, 2015
+//Purpose: To test the functionality of our bst class with an application 
+//        program that will keep track of userInfo in a binary search tree.
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -8,16 +13,47 @@
 
 using namespace std;
 
+
+//Name: menu
+//Description: menu prompt
+//Paremeters: none
+//Return: the user's choice as an integer
 int menu();
+
+//Name: initUsers
+//Description: fill in a bst with data retrieved from a file
+//Paremeters: users - IN/OUT - the bst
+//Return: none
 void initUsers(bst<userInfo> &users);
-void login(bst<userInfo> &users);
-void display(bst<userInfo> users);
+
+
+//Name: login
+//Description: login a user
+//Paremeters: users - IN - the bst
+//Return: none
+void login(const bst<userInfo>& users);
+
+
+//Name: addUser
+//Description: add a user
+//Paremeters: users - IN/OUT - the bst
+//Return: none
 void addUser(bst<userInfo> &users);
+
+//Name: removeUser
+//Description: remove a user
+//Paremeters: users - IN/OUT - the bst
+//Return: none
 void removeUser(bst<userInfo> &users);
+
+//Name: display
+//Description: RNL preorder traversal printout of bst
+//Paremeters: users - IN - the bst
+//Return: none
+void display(bst<userInfo> users);
 
 int main()
 {
-
     int option;
     bst<userInfo> * users = new bst<userInfo>();
 
@@ -35,11 +71,11 @@ int main()
     return 0;
 }
 
-
+//Description: menu prompt
 int menu()
 {
     int choice;
-    cout << endl;
+    cout << endl << endl;
     cout << "1. Get initial users from file" << endl;
     cout << "2. Login" << endl;
     cout << "3. Add a user" << endl;
@@ -51,108 +87,125 @@ int menu()
     return choice;
 }
 
-
+//Description: fill in a bst with data retrieved from a file
 void initUsers(bst<userInfo> &users)
 {
+	// get file
     ifstream inFile;
     string fileName;
-    cout << "\n\n\nEnter file name: ";
+    cout << "\nEnter file name: ";
     cin >> fileName;
     inFile.open(fileName.c_str());
     if (!inFile.is_open())
     {
-        cout << "ERROR: Unable to open file." << endl;
+        cout << "\nERROR: Unable to open file." << endl;
     }
     else
     {
-        cout << "File opened successfully." << endl;
+        cout << "\nFile opened successfully." << endl;
     }
-    userInfo* add = new userInfo();
-    string info = "";
-    while (inFile >> info)
-    {
+	
+	// get data
+	int pre = users.nodeCount();
+	int error = 0;
+	int count = 0;
+    userInfo* person = new userInfo();
+    string id, pass;
+    while (inFile >> id)
+    { 
+		inFile >> pass;
+        count++;
         
-        add->setId(info);
-        inFile >> info;
-        add->setPassword(info);
-        users.insert(*add);
+    	person->setId(id);
+        person->setPassword(pass);
+        
+		if(!(users.insert(*person)))
+		{
+			cout << "\nERROR: ID '" + id + "' unavailable.";
+			error++;
+		}
     }
-    if (users.isEmpty())
-    {
-        cout << "No data could be retrieved\n";
-    }
+	
+	// check after-state of bst
+    if (pre == users.nodeCount())
+        cout << "\nNo data retrieved";
+    else if (error == 0)
+        cout << "\nData retrieved successfully.";
     else
-    {
-        cout << "Data retrived successfully.\n";
-    }
+		cout << "\nUnable to initialize " << error << 
+	            " of " << count << " total items.";
+		
 }
 
-
-void display(bst<userInfo> users)
+//Description: login a user
+void login(const bst<userInfo>& users)
 {
-    users.preorderTraverse();
-    cout << "\nLeaves: " << users.leafCount() << endl;
-    cout << "Height: " << users.height() << endl;
+	string id, pass;
+	userInfo *person = new userInfo();
+	
+	cout << "\nEnter user ID: ";
+	cin >> id;
+	cout << "Enter password: ";
+	cin >> pass;
+	
+	person->setId(id);
+	person->setPassword(pass);
+	
+	if(users.retrieve(*person))
+	{
+		if(person->login(pass))
+			cout << "\nLogin successful.";
+		else
+			cout << "\nERROR: Incorrect password.";	
+	}
+	else
+		cout << "\nERROR: Unable to locate ID.";
 }
 
+//Description: add a user
+void addUser(bst<userInfo> &users)
+{
+	string id, pass;
+	userInfo *person = new userInfo();
+	
+	cout << "\nEnter user ID: ";
+	cin >> id;
+	cout << "Enter password: ";
+	cin >> pass;
+	
+	person->setId(id);
+	person->setPassword(pass);
+	
+    if (users.insert(*person))
+        cout << "\nUser added successfully.";
+    else
+       cout << "\nERROR: User ID unavailable.";
+	
+	
+}
 
+//Description: remove a user
 void removeUser(bst<userInfo> &users)
 {
     string id, pass;
     userInfo* person = new userInfo();
-    cout << "Enter ID of user you wish to remove: " << endl;
+	
+    cout << "\nEnter ID of user to remove: ";
     cin >> id;
-    cout << "Enter Password of user you wish to remove: " << endl;
-    cin >> pass;
+
     person->setId(id);
-    cout << "fine" << endl;
-    person->setPassword(pass); 
     if (users.remove(*person))
-    {
-        cout << "User was removed successfully" << endl;
-    }
+        cout << "\nUser removed successfully.";
     else
-       cout << "ERROR: Unable to remove user, or the user did not exist" << endl;
+       cout << "\nERROR: Unable to locate ID.";
 }
 
-void login(bst<userInfo> &info)
+//Description: RNL preorder traversal printout of bst
+void display(bst<userInfo> users)
 {
-	string id, pass;
-	userInfo *data = new userInfo();
-	
-	cout << "Enter user Id: ";
-	cin >> id;
-	cout << "Enter password: ";
-	cin >> pass;
-	data -> setId(id);
-	data -> setPassword(pass);
-	
-	if(info.retrieve(*data) == true)
-	{
-		if(data->login(pass) == true)
-		{
-			cout << "Login Successful" << endl;
-		}
-		if(data->login(pass) == false)
-		{
-			cout << "Login Failed" << endl;
-		}
-	}
-	else
-		cout << " Login Failed" << endl;
-}
-
-void addUser(bst<userInfo> &info)
-{
-	string id, pass;
-	userInfo *data = new userInfo();
-	
-	cout << "Enter user Id: ";
-	cin >> id;
-	cout << "Enter password: ";
-	cin >> pass;
-	
-	data->setId(id);
-	data->setPassword(pass);
-	info.insert(*data);
+	cout << endl;
+    users.preorderTraverse();
+	cout << "\nNodes: " << users.nodeCount();
+    cout << "\nLeaves: " << users.leafCount();
+    cout << "\nHeight: " << users.height();
 }
