@@ -1,9 +1,3 @@
-//File:     userInfo.h
-//Author:   Professor Day
-//Course:   CSC 237
-//Date:     Spring 2015
-//Purpose:  Records id and passwords for computer users
-
 #include <iostream>
 #include <fstream>
 using namespace std;
