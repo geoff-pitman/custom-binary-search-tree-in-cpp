@@ -1,9 +1,5 @@
-//File:   bst.h
-//Updated:Geoffrey Pitman
-//Author: Linda Day
-//Course: CSC 237
-//Date:   April 30, 2015
-//Purpose:Declaration of a binary search tree, class bst
+
+//Declaration of a binary search tree, class bst
 
 #ifndef BST_H
 #define BST_H
