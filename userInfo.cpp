@@ -1,9 +1,3 @@
-//File:     userInfo.cpp
-//Author:   Professor Day
-//Course:   CSC 237
-//Date:     spring 2015
-//Purpose:  Implements userInfo functions
-
 #include <iostream>
 #include <string>
 #include "userInfo.h"
